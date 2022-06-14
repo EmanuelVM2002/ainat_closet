@@ -63,12 +63,33 @@ namespace ainat_closet.Controllers
             return View(state);
         }
 
+        public async Task<IActionResult> DetailsCity(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            City city = await _context.Cities
+                .Include(c => c.State)
+                .Include(c => c.State.Country)
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (city == null)
+            {
+                return NotFound();
+            }
+
+            return View(city);
+        }
+
         [HttpGet]
         public IActionResult Create()
         {
             Country country = new() { States = new List<State>() };
             return View(country);
         }
+
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -435,6 +456,69 @@ namespace ainat_closet.Controllers
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> DeleteCity(int? id)
+        {
+            if (id == null || _context.Cities == null)
+            {
+                return NotFound();
+            }
+
+            City city = await _context.Cities
+                .Include(c => c.State)
+                .Include(c => c.State.Country)
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (city == null)
+            {
+                return NotFound();
+            }
+
+            return View(city);
+        }
+
+        [HttpPost, ActionName("DeleteCity")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteCityConfirmed(int id)
+        {
+            City city = await _context.Cities
+                .Include(s => s.State)
+                .FirstOrDefaultAsync(s => s.Id == id);
+            _context.Cities.Remove(city);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Details), new { Id = city.State.Id });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> DeleteState(int? id)
+        {
+            if (id == null || _context.States == null)
+            {
+                return NotFound();
+            }
+
+            State state = await _context.States
+                .Include(s => s.Country)
+                .FirstOrDefaultAsync(s => s.Id == id);
+            if (state == null)
+            {
+                return NotFound();
+            }
+
+            return View(state);
+        }
+
+        [HttpPost, ActionName("DeleteState")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteStateConfirmed(int id)
+        {
+            State state = await _context.States
+                .Include(s => s.Country)
+                .FirstOrDefaultAsync(s => s.Id == id);
+            _context.States.Remove(state);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Details), new { Id = state.Country.Id });
         }
     }
 }
