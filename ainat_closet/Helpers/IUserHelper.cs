@@ -1,4 +1,5 @@
 ﻿using ainat_closet.Data.Entities;
+using ainat_closet.Models;
 using Microsoft.AspNetCore.Identity;
 
 namespace ainat_closet.Helpers
@@ -10,5 +11,8 @@ namespace ainat_closet.Helpers
         Task CheckRoleAsync(string roleName);
         Task AddUserToRoleAsync(User user, string roleName);
         Task<bool> IsUserInRoleAsync(User user, string roleName);
+        Task<SignInResult> LoginAsync(LoginViewModel model);
+        Task LogoutAsync();
+
     }
 }

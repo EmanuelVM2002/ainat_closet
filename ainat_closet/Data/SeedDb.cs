@@ -22,6 +22,8 @@ namespace ainat_closet.Data
             await CheckCountriesAsync();
             await CheckRolesAsync();
             await CheckUserAsync("Tania", "Durinda", "ainat_closet@hotmail.com", "3218120633", "No Disponible", UserType.Admin);
+            await CheckUserAsync("Emanuel", "Villada", "emanuelvillada10@gmail.com", "3017759082", "No Disponible", UserType.User);
+
         }
 
         private async Task<User> CheckUserAsync(

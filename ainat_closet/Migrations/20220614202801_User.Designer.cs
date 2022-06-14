@@ -12,8 +12,8 @@ using ainat_closet.Data;
 namespace ainat_closet.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20220614185145_AddUserEntities")]
-    partial class AddUserEntities
+    [Migration("20220614202801_User")]
+    partial class User
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
