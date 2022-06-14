@@ -500,6 +500,7 @@ namespace ainat_closet.Controllers
 
             State state = await _context.States
                 .Include(s => s.Country)
+                .Include(s => s.Cities)
                 .FirstOrDefaultAsync(s => s.Id == id);
             if (state == null)
             {
@@ -515,6 +516,7 @@ namespace ainat_closet.Controllers
         {
             State state = await _context.States
                 .Include(s => s.Country)
+                .Include(s => s.Cities)
                 .FirstOrDefaultAsync(s => s.Id == id);
             _context.States.Remove(state);
             await _context.SaveChangesAsync();
