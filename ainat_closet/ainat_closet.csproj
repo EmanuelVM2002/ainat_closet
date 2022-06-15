@@ -18,4 +18,9 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.5" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\images\products\" />
+    <Folder Include="wwwroot\images\users\" />
+  </ItemGroup>
+
 </Project>
