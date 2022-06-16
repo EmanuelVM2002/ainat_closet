@@ -4728,6 +4728,10 @@ textarea.form-control-lg {
   color: #6c757d;
 }
 
+.btn-primary, .btn-primary:hover, .btn-primary:active, .btn-primary:visited {
+    background-color: #D519DE;
+}
+
 .pagination {
   display: flex;
   padding-left: 0;

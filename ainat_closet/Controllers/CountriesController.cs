@@ -126,13 +126,13 @@ namespace ainat_closet.Controllers
 
         public async Task<IActionResult> AddState(int? id)
         {
-            if(id == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
             Country country = await _context.Countries.FindAsync(id);
-            if(country == null)
+            if (country == null)
             {
                 return NotFound();
             }
@@ -161,7 +161,7 @@ namespace ainat_closet.Controllers
                     };
                     _context.Add(state);
                     await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Details), new { Id = model.CountryId});
+                    return RedirectToAction(nameof(Details), new { Id = model.CountryId });
                 }
                 catch (DbUpdateException dbUpdateException)
                 {
@@ -337,7 +337,7 @@ namespace ainat_closet.Controllers
                     };
                     _context.Update(state);
                     await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Details), new { Id = model.CountryId});
+                    return RedirectToAction(nameof(Details), new { Id = model.CountryId });
                 }
                 catch (DbUpdateException dbUpdateException)
                 {

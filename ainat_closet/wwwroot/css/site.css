@@ -16,3 +16,10 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.circule {
+    width: 40px;
+    height: 40px;
+    background-color: #2E54E0;
+    border-radius: 200%;
+}
