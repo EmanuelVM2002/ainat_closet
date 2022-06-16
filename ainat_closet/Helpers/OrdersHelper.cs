@@ -3,6 +3,7 @@ using ainat_closet.Data;
 using ainat_closet.Data.Entities;
 using ainat_closet.Enums;
 using ainat_closet.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace ainat_closet.Helpers
 {
@@ -14,6 +15,27 @@ namespace ainat_closet.Helpers
         {
             _context = context;
         }
+        public async Task<Response> CancelOrderAsync(int id)
+        {
+            Sale sale = await _context.Sales
+                .Include(s => s.SaleDetails)
+                .ThenInclude(sd => sd.Product)
+                .FirstOrDefaultAsync(s => s.Id == id);
+
+            foreach (SaleDetail saleDetail in sale.SaleDetails)
+            {
+                Product product = await _context.Products.FindAsync(saleDetail.Product.Id);
+                if (product != null)
+                {
+                    product.Stock += saleDetail.Quantity;
+                }
+            }
+
+            sale.OrderStatus = OrderStatus.Cancelado;
+            await _context.SaveChangesAsync();
+            return new Response { IsSuccess = true };
+        }
+
 
         public async Task<Response> ProcessOrderAsync(ShowCartViewModel model)
         {
