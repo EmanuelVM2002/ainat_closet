@@ -1,6 +1,7 @@
 ﻿using ainat_closet.Data.Entities;
 using ainat_closet.Enums;
 using ainat_closet.Helpers;
+using Microsoft.EntityFrameworkCore;
 
 namespace ainat_closet.Data
 {
@@ -8,11 +9,13 @@ namespace ainat_closet.Data
     {
         private readonly DataContext _context;
         private readonly IUserHelper _userHelper;
+        private readonly IBlobHelper _blobHelper;
 
-        public SeedDb(DataContext context, IUserHelper userHelper)
+        public SeedDb(DataContext context, IUserHelper userHelper, IBlobHelper blobHelper)
         {
             _context = context;
             _userHelper = userHelper;
+            _blobHelper = blobHelper;
         }
 
         public async Task SeedAsync()
@@ -20,10 +23,40 @@ namespace ainat_closet.Data
             await _context.Database.EnsureCreatedAsync();
             await CheckCategoriesAsync();
             await CheckCountriesAsync();
+            await CheckProductsAsync();
             await CheckRolesAsync();
-            await CheckUserAsync("Tania", "Durinda", "ainat_closet@hotmail.com", "3218120633", "No Disponible", UserType.Admin);
-            await CheckUserAsync("Emanuel", "Villada", "emanuelvillada10@gmail.com", "3017759082", "No Disponible", UserType.User);
+            await CheckUserAsync("Ainat", "Closet", "ainat_closet@hotmail.com", "0000000000", "No Disponible", UserType.Admin);
+        }
 
+        private async Task CheckProductsAsync()
+        {
+            if (!_context.Products.Any())
+            {
+                await AddProductAsync("Falda Hermosa", 180000M, 12F, new List<string>() { "Falda1.jpg", "falda2.jpg", "falda3.jpg" });
+                await AddProductAsync("Pantalon Hermosa", 190000M, 6F, new List<string>() { "Pantalon1.jpg", "Pantalon2.jpg", "Pantalon3.jpg" });
+                await AddProductAsync("Ropa Interior Hermosa", 220000M, 3F, new List<string>() { "RopaInterior1.jpg", "RopaInterior2.jpg", "RopaInterior3.jpg" });
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        private async Task AddProductAsync(string name, decimal price, float stock, List<string> images)
+        {
+            Product prodcut = new()
+            {
+                Description = name,
+                Name = name,
+                Price = price,
+                Stock = stock,
+                ProductImages = new List<ProductImage>()
+            };
+
+            foreach (string? image in images)
+            {
+                Guid imageId = await _blobHelper.UploadBlobAsync($"{Environment.CurrentDirectory}\\wwwroot\\images\\products\\{image}", "products");
+                prodcut.ProductImages.Add(new ProductImage { ImageId = imageId });
+            }
+
+            _context.Products.Add(prodcut);
         }
 
         private async Task<User> CheckUserAsync(
@@ -351,35 +384,6 @@ namespace ainat_closet.Data
                         }
                     }
                 });
-                _context.Countries.Add(new Country
-                {
-                    Name = "Estados Unidos",
-                    States = new List<State>()
-                    {
-                        new State()
-                        {
-                            Name = "Florida",
-                            Cities = new List<City>() {
-                                new City() { Name = "Orlando" },
-                                new City() { Name = "Miami" },
-                                new City() { Name = "Tampa" },
-                                new City() { Name = "Fort Lauderdale" },
-                                new City() { Name = "Key West" },
-                            }
-                        },
-                        new State()
-                        {
-                            Name = "Texas",
-                            Cities = new List<City>() {
-                                new City() { Name = "Houston" },
-                                new City() { Name = "San Antonio" },
-                                new City() { Name = "Dallas" },
-                                new City() { Name = "Austin" },
-                                new City() { Name = "El Paso" },
-                            }
-                        },
-                    }
-                });
             }
             await _context.SaveChangesAsync();
         }
@@ -388,13 +392,13 @@ namespace ainat_closet.Data
         {
             if(!_context.Categories.Any())
             {
+                _context.Categories.Add(new Category { Name = "Faldas" });
                 _context.Categories.Add(new Category { Name = "Accesorios" });
                 _context.Categories.Add(new Category { Name = "Pantalones" });
                 _context.Categories.Add(new Category { Name = "Jean" });
                 _context.Categories.Add(new Category { Name = "Chaquetas" });
                 _context.Categories.Add(new Category { Name = "Vestidos" });
                 _context.Categories.Add(new Category { Name = "Blusas" });
-                _context.Categories.Add(new Category { Name = "Faldas" });
                 _context.Categories.Add(new Category { Name = "Busos" });
                 _context.Categories.Add(new Category { Name = "Short" });
                 _context.Categories.Add(new Category { Name = "Ropa Interior" });
