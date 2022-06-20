@@ -21,81 +21,9 @@ namespace ainat_closet.Data
         public async Task SeedAsync()
         {
             await _context.Database.EnsureCreatedAsync();
-            await CheckCategoriesAsync();
             await CheckCountriesAsync();
-            await CheckProductsAsync();
             await CheckRolesAsync();
             await CheckUserAsync("Ainat", "Closet", "ainat_closet@hotmail.com", "0000000000", "No Disponible", UserType.Admin);
-        }
-
-        private async Task CheckProductsAsync()
-        {
-            if (!_context.Products.Any())
-            {
-                await AddProductAsync("Falda Hermosa", 180000M, 12F, new List<string>() { "Falda1.jpg", "falda2.jpg", "falda3.jpg" });
-                await AddProductAsync("Pantalon Hermosa", 190000M, 6F, new List<string>() { "Pantalon1.jpg", "Pantalon2.jpg", "Pantalon3.jpg" });
-                await AddProductAsync("Ropa Interior Hermosa", 220000M, 3F, new List<string>() { "RopaInterior1.jpg", "RopaInterior2.jpg", "RopaInterior3.jpg" });
-                await _context.SaveChangesAsync();
-            }
-        }
-
-        private async Task AddProductAsync(string name, decimal price, float stock, List<string> images)
-        {
-            Product prodcut = new()
-            {
-                Description = name,
-                Name = name,
-                Price = price,
-                Stock = stock,
-                ProductImages = new List<ProductImage>()
-            };
-
-            foreach (string? image in images)
-            {
-                Guid imageId = await _blobHelper.UploadBlobAsync($"{Environment.CurrentDirectory}\\wwwroot\\images\\products\\{image}", "products");
-                prodcut.ProductImages.Add(new ProductImage { ImageId = imageId });
-            }
-
-            _context.Products.Add(prodcut);
-        }
-
-        private async Task<User> CheckUserAsync(
-        string firstName,
-        string lastName,
-        string email,
-        string phone,
-        string address,
-        UserType userType)
-        {
-            User user = await _userHelper.GetUserAsync(email);
-            if (user == null)
-            {
-                user = new User
-                {
-                    FirstName = firstName,
-                    LastName = lastName,
-                    Email = email,
-                    UserName = email,
-                    PhoneNumber = phone,
-                    Address = address,
-                    City = _context.Cities.FirstOrDefault(),
-                    UserType = userType,
-                };
-
-                await _userHelper.AddUserAsync(user, "ainatcloset123");
-                await _userHelper.AddUserToRoleAsync(user, userType.ToString());
-
-                string token = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
-                await _userHelper.ConfirmEmailAsync(user, token);
-            }
-            return user;
-        }
-
-
-        private async Task CheckRolesAsync()
-        {
-            await _userHelper.CheckRoleAsync(UserType.Admin.ToString());
-            await _userHelper.CheckRoleAsync(UserType.User.ToString());
         }
 
         private async Task CheckCountriesAsync()
@@ -105,7 +33,7 @@ namespace ainat_closet.Data
                 _context.Countries.Add(new Country
                 {
                     Name = "Colombia",
-                    States =  new List<State>()
+                    States = new List<State>()
                     {
                         new State
                         {
@@ -125,7 +53,7 @@ namespace ainat_closet.Data
                             Name = "Amazonas",
                             Cities = new List<City>()
                             {
-                                
+
                             }
                         },
                         new State
@@ -388,23 +316,43 @@ namespace ainat_closet.Data
             await _context.SaveChangesAsync();
         }
 
-        private async Task CheckCategoriesAsync()
+        private async Task<User> CheckUserAsync(
+        string firstName,
+        string lastName,
+        string email,
+        string phone,
+        string address,
+        UserType userType)
         {
-            if(!_context.Categories.Any())
+            User user = await _userHelper.GetUserAsync(email);
+            if (user == null)
             {
-                _context.Categories.Add(new Category { Name = "Faldas" });
-                _context.Categories.Add(new Category { Name = "Accesorios" });
-                _context.Categories.Add(new Category { Name = "Pantalones" });
-                _context.Categories.Add(new Category { Name = "Jean" });
-                _context.Categories.Add(new Category { Name = "Chaquetas" });
-                _context.Categories.Add(new Category { Name = "Vestidos" });
-                _context.Categories.Add(new Category { Name = "Blusas" });
-                _context.Categories.Add(new Category { Name = "Busos" });
-                _context.Categories.Add(new Category { Name = "Short" });
-                _context.Categories.Add(new Category { Name = "Ropa Interior" });
-                _context.Categories.Add(new Category { Name = "Corsets" });
-                await _context.SaveChangesAsync();
+                user = new User
+                {
+                    FirstName = firstName,
+                    LastName = lastName,
+                    Email = email,
+                    UserName = email,
+                    PhoneNumber = phone,
+                    Address = address,
+                    City = _context.Cities.FirstOrDefault(),
+                    UserType = userType,
+                };
+
+                await _userHelper.AddUserAsync(user, "ainatcloset123");
+                await _userHelper.AddUserToRoleAsync(user, userType.ToString());
+
+                string token = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
+                await _userHelper.ConfirmEmailAsync(user, token);
             }
+            return user;
         }
+
+        private async Task CheckRolesAsync()
+        {
+            await _userHelper.CheckRoleAsync(UserType.Admin.ToString());
+            await _userHelper.CheckRoleAsync(UserType.User.ToString());
+        }
+
     }
 }

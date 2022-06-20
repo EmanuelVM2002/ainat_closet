@@ -132,6 +132,10 @@ namespace ainat_closet.Controllers
             {
                 return NotFound();
             }
+            if(user.Email == "ainat_closet@hotmail.com")
+            {
+                return RedirectToAction("Index", "Home");
+            }
 
             EditUserViewModel model = new()
             {
