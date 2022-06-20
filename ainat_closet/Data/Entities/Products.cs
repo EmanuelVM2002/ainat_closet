@@ -39,7 +39,7 @@ namespace ainat_closet.Data.Entities
 
         [Display(Name = "Foto")]
         public string ImageFullPath => ProductImages == null || ProductImages.Count == 0
-            ? $"https://localhost:7199/images/Logo.jpeg"
+            ? $"https://ainatcloset.azurewebsites.net/images/Logo.jpeg"
             : ProductImages.FirstOrDefault().ImageFullPath;
 
         public ICollection<SaleDetail> SaleDetails { get; set; }

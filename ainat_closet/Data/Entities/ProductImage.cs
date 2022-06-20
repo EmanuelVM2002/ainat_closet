@@ -12,7 +12,7 @@ namespace ainat_closet.Data.Entities
 
         [Display(Name = "Foto")]
         public string ImageFullPath => ImageId == Guid.Empty
-            ? $"https://localhost:7199/images/Logo.jpeg"
+            ? $"https://ainatcloset.azurewebsites.net/images/Logo.jpeg"
             : $"https://ainatcloset.blob.core.windows.net/products/{ImageId}";
     }
 
