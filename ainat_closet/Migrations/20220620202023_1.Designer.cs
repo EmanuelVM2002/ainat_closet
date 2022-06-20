@@ -12,7 +12,7 @@ using ainat_closet.Data;
 namespace ainat_closet.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20220616205553_1")]
+    [Migration("20220620202023_1")]
     partial class _1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
