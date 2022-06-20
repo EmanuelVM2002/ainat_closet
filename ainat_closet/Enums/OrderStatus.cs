@@ -3,9 +3,9 @@
     public enum OrderStatus
     {
         Nuevo,
-        Despachado,
-        Enviado,
         Confirmado,
+        Enviado,
+        Entregado,
         Cancelado
     }
 }

@@ -48,14 +48,14 @@ namespace ainat_closet.Controllers
 
             if (sale.OrderStatus != OrderStatus.Nuevo)
             {
-                _flashMessage.Danger("Solo se pueden despachar pedidos que estén en estado 'nuevo'.");
+                _flashMessage.Danger("Solo se pueden Confirmar pedidos que estén en estado 'nuevo'.");
             }
             else
             {
-                sale.OrderStatus = OrderStatus.Despachado;
+                sale.OrderStatus = OrderStatus.Confirmado;
                 _context.Sales.Update(sale);
                 await _context.SaveChangesAsync();
-                _flashMessage.Confirmation("El estado del pedido ha sido cambiado a 'despachado'.");
+                _flashMessage.Confirmation("El estado del pedido ha sido cambiado a 'Confirmado'.");
             }
 
             return RedirectToAction(nameof(Details), new { Id = sale.Id });
@@ -102,9 +102,9 @@ namespace ainat_closet.Controllers
                 return NotFound();
             }
 
-            if (sale.OrderStatus != OrderStatus.Despachado)
+            if (sale.OrderStatus != OrderStatus.Confirmado)
             {
-                _flashMessage.Danger("Solo se pueden enviar pedidos que estén en estado 'despachado'.");
+                _flashMessage.Danger("Solo se pueden enviar pedidos que estén en estado 'Confirmado'.");
             }
             else
             {
@@ -133,14 +133,14 @@ namespace ainat_closet.Controllers
 
             if (sale.OrderStatus != OrderStatus.Enviado)
             {
-                _flashMessage.Danger("Solo se pueden confirmar pedidos que estén en estado 'enviado'.");
+                _flashMessage.Danger("Solo se puede brindar estado de Entregado a pedido Enviados");
             }
             else
             {
-                sale.OrderStatus = OrderStatus.Confirmado;
+                sale.OrderStatus = OrderStatus.Entregado;
                 _context.Sales.Update(sale);
                 await _context.SaveChangesAsync();
-                _flashMessage.Confirmation("El estado del pedido ha sido cambiado a 'confirmado'.");
+                _flashMessage.Confirmation("El estado del pedido ha sido cambiado a 'Entregado'.");
             }
 
             return RedirectToAction(nameof(Details), new { Id = sale.Id });
